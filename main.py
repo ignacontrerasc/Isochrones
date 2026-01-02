@@ -1,6 +1,6 @@
 import streamlit as st
 import folium
-from streamlit_folium import folium_static
+from streamlit_folium import st_folium  # Updated import
 import requests
 from time import sleep
 import re
@@ -107,4 +107,4 @@ if show_isochrones:
             sleep(0.5)
 
 # Render map in Streamlit
-folium_static(m)
+st_folium(m)  # Updated function for rendering
