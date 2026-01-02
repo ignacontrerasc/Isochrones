@@ -23,6 +23,14 @@ st.title("Isócronos y Atracciones Turísticas en Bangkok")
 
 # Sidebar options
 st.sidebar.title("Opciones")
+
+# Google link for the central point (Hotel)
+hotel_map_link = f"https://www.google.com/maps?q={hotel_coords[0]},{hotel_coords[1]}"
+st.sidebar.markdown(f"[Ver Hotel en Google Maps]({hotel_map_link})")
+
+# User-input link for attractions
+attractions_link = st.sidebar.text_input("Enlace a lista de lugares")
+
 show_isochrones = st.sidebar.checkbox("Mostrar isócronos", True)
 show_attractions = st.sidebar.checkbox("Mostrar atracciones", True)
 
@@ -31,6 +39,15 @@ m = folium.Map(location=hotel_coords, zoom_start=13)
 
 # Add hotel marker
 folium.Marker(hotel_coords, popup="SOHO Heritage House", icon=folium.Icon(color="red")).add_to(m)
+
+# Parse attractions from the user's input
+def add_custom_attractions(link):
+    """Function to add attractions based on a user-provided link."""
+    # Placeholder for parsing CSV or JSON from a URL (not implemented due to simplicity)
+    pass
+
+if attractions_link:
+    add_custom_attractions(attractions_link)
 
 # Add attraction markers if checkbox selected
 if show_attractions:
