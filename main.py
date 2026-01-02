@@ -20,7 +20,7 @@ def get_coordinates_from_link(link):
         return None, None
 
 # Streamlit app
-st.title("Isócronos y Atracciones Dinámicas en Bangkok")
+st.title("Isócronos y Atracciones Dinámicas")
 
 # Sidebar
 st.sidebar.title("Opciones")
