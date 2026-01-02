@@ -33,6 +33,7 @@ if hotel_link:
     if hotel_coords == (None, None):
         st.sidebar.error("No se pudieron obtener las coordenadas del hotel.")
         hotel_coords = (13.747, 100.508)  # Default fallback coordinates
+    st.sidebar.info(f"{hotel_coords}")
 else:
     hotel_coords = (13.747, 100.508)  # Default fallback coordinates
 
