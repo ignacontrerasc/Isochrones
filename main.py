@@ -50,7 +50,7 @@ show_attractions = st.sidebar.checkbox("Mostrar atracciones", True)
 
 if hotel_coords != (None, None):
     # Create map
-    m = folium.Map(location=hotel_coords, zoom_start=13)
+    m = folium.Map(location=hotel_coords, zoom_start=13, width="100%", height=400)
     
     # Add hotel marker
     folium.Marker(hotel_coords, popup="Hotel", icon=folium.Icon(color="red")).add_to(m)
