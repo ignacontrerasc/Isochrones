@@ -180,14 +180,26 @@ with st.sidebar:
         # Pills para seleccionar intervalos
         if available_intervals:
             st.write("**Seleccionar intervalos:**")
-            selected_intervals = []
             
-            # Crear checkboxes dinámicamente
-            cols = st.columns(3)
-            for idx, interval in enumerate(available_intervals):
-                with cols[idx % 3]:
-                    if st.checkbox(f"{interval} min", value=True, key=f"interval_{interval}"):
-                        selected_intervals.append(interval)
+            # Convertir a formato de opciones para pills
+            pill_options = [f"{interval} min" for interval in available_intervals]
+            
+            # Usar st.pills para selección múltiple
+            selected_pills = st.pills(
+                "Intervalos activos",
+                options=pill_options,
+                default=pill_options,  # Todos seleccionados por defecto
+                selection_mode="multi",
+                label_visibility="collapsed"
+            )
+            
+            # Extraer los números de las pills seleccionadas
+            selected_intervals = []
+            if selected_pills:
+                for pill in selected_pills:
+                    number = re.sub(r'[^\d]', '', pill)
+                    if number:
+                        selected_intervals.append(int(number))
         else:
             selected_intervals = []
             st.warning("Ingresa intervalos válidos (números separados por comas)")
@@ -213,16 +225,21 @@ with st.sidebar:
         # Input para agregar atracción
         new_attraction_url = st.text_input(
             "Agregar nueva atracción",
-            placeholder="Pega el enlace de Google Maps",
+            placeholder="Pega el enlace de Google Maps y presiona Enter",
             key="new_attraction_input"
         )
         
-        if new_attraction_url:
-            if add_attraction(new_attraction_url, attraction_icon):
-                st.success("✅ Atracción agregada")
-                st.rerun()
-            else:
-                st.error("❌ URL inválida o sin coordenadas")
+        # Detectar si se agregó una URL nueva
+        if new_attraction_url and new_attraction_url.strip():
+            # Verificar si esta URL ya fue agregada
+            existing_urls = [attr['url'] for attr in st.session_state.attractions]
+            if new_attraction_url not in existing_urls:
+                if add_attraction(new_attraction_url, attraction_icon):
+                    st.success("✅ Atracción agregada")
+                    # Limpiar el input rerun
+                    st.rerun()
+                else:
+                    st.error("❌ URL inválida o sin coordenadas")
         
         # Lista de atracciones agregadas
         if st.session_state.attractions:
@@ -297,6 +314,44 @@ if st.session_state.hotel_coords:
                 tooltip=attraction['name'],
                 icon=folium.Icon(color="blue", icon=attraction['icon'])
             ).add_to(m)
+    
+    # Agregar leyenda si hay isócronos
+    if show_isochrones and selected_intervals:
+        legend_html = '''
+        <div style="position: fixed; 
+                    bottom: 50px; 
+                    right: 50px; 
+                    width: 180px; 
+                    background-color: white; 
+                    border:2px solid grey; 
+                    border-radius: 5px;
+                    z-index:9999; 
+                    font-size:14px;
+                    padding: 10px;
+                    box-shadow: 2px 2px 6px rgba(0,0,0,0.3);
+                    ">
+        <h4 style="margin-top:0; margin-bottom:10px; font-size:16px;">⏱️ Isócronos</h4>
+        <p style="margin:5px 0; font-size:12px; color:#666;">Tiempo caminando</p>
+        '''
+        
+        for interval in sorted(selected_intervals):
+            color = colors.get(interval, "gray")
+            legend_html += f'''
+            <div style="margin: 5px 0;">
+                <span style="background-color:{color}; 
+                            opacity: {opacity + 0.3};
+                            width: 20px; 
+                            height: 15px; 
+                            display: inline-block; 
+                            border: 1px solid #333;
+                            margin-right: 8px;
+                            vertical-align: middle;"></span>
+                <span style="vertical-align: middle;">{interval} min</span>
+            </div>
+            '''
+        
+        legend_html += '</div>'
+        m.get_root().html.add_child(folium.Element(legend_html))
     
     # Renderizar mapa (ancho completo del container)
     st_folium(m, width="100%", height=600, use_container_width=True)
