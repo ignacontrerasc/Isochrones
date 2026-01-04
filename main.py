@@ -217,7 +217,7 @@ with st.sidebar:
             key="new_attraction_input"
         )
         
-        if st.button("➕ Agregar atracción"):
+        if new_attraction_url:
             if add_attraction(new_attraction_url, attraction_icon):
                 st.success("✅ Atracción agregada")
                 st.rerun()
