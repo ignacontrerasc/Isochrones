@@ -95,7 +95,7 @@ if hotel_coords != (None, None):
                             locations=coords,
                             color=isochrone_colors[i],
                             fill=True,
-                            fill_opacity=0.4,
+                            fill_opacity=0.2,
                             weight=2,
                             popup=f"{minutes} minutos"
                         ).add_to(m)
