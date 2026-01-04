@@ -48,9 +48,8 @@ if attractions_links:
 show_isochrones = st.sidebar.checkbox("Mostrar isócronos", True)
 show_attractions = st.sidebar.checkbox("Mostrar atracciones", True)
 
-# Create map
 if hotel_coords != (None, None):
-    
+    # Create map
     m = folium.Map(location=hotel_coords, zoom_start=13)
     
     # Add hotel marker
